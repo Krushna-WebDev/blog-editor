@@ -71,11 +71,11 @@ const EditBlog = () => {
     try {
       const res = await axios.post(`${API_BASE}/blogs/save-draft`, payload);
       if (!id && res.data.id) navigate(`/edit/${res.data.id}`);
-      if (isAuto) toast.info("Auto-saved draft ✨", { autoClose: 2000 });
-      else toast.success("Draft saved ✅");
+      if (isAuto) toast.info("Auto-saved draft ", { autoClose: 2000 });
+      else toast.success("Draft saved ");
     } catch (err) {
       console.error("Save failed:", err);
-      toast.error("Failed to save draft ❌");
+      toast.error("Failed to save draft ");
     } finally {
       isSavingRef.current = false;
     }
@@ -90,11 +90,11 @@ const EditBlog = () => {
 
     try {
       await axios.post(`${API_BASE}/blogs/publish`, payload);
-      toast.success("Published successfully 🚀");
+      toast.success("Published successfully ");
       navigate('/');
     } catch (err) {
       console.error("Publish error:", err);
-      toast.error("Failed to publish ❌");
+      toast.error("Failed to publish ");
     }
   };
 

@@ -51,3 +51,13 @@ exports.getBlogById = async (req, res) => {
     res.status(500).json({ message: "Failed to get blog", error: err });
   }
 };
+
+exports.deleteBlog = async (req, res) => {
+  try {
+    const blog = await Blog.findByIdAndDelete(req.params.id);
+    if (!blog) return res.status(404).json({ message: "Blog not found" });
+    res.json({ message: "Blog deleted" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete blog", error: err });
+  }
+};
