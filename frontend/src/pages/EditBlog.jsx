@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import BlogEditor from '../components/BlogEditor';
+import React, { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+import BlogEditor from "../components/BlogEditor";
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
@@ -11,10 +11,10 @@ const EditBlog = () => {
   const navigate = useNavigate();
 
   const [blog, setBlog] = useState({
-    _id: '',
-    title: '',
-    content: '',
-    tags: ''
+    _id: "",
+    title: "",
+    content: "",
+    tags: "",
   });
 
   const timeoutRef = useRef(null);
@@ -22,17 +22,18 @@ const EditBlog = () => {
 
   useEffect(() => {
     if (id) {
-      axios.get(`${API_BASE}/blogs/${id}`)
-        .then(res => {
+      axios
+        .get(`${API_BASE}/blogs/${id}`)
+        .then((res) => {
           const data = res.data;
           setBlog({
             _id: data._id,
             title: data.title,
             content: data.content,
-            tags: data.tags.join(', ')
+            tags: data.tags.join(", "),
           });
         })
-        .catch(err => {
+        .catch((err) => {
           console.error("Error loading blog:", err);
           toast.error("Failed to load blog!");
         });
@@ -58,12 +59,13 @@ const EditBlog = () => {
   }, [blog]);
 
   const handleSaveDraft = async (isAuto = false) => {
+    if (!blog.title.trim() || !blog.content.trim()) return; // Prevent save if empty
     if (isSavingRef.current) return;
     isSavingRef.current = true;
 
     const payload = {
       ...blog,
-      tags: blog.tags.split(',').map(tag => tag.trim()),
+      tags: blog.tags.split(",").map((tag) => tag.trim()),
     };
 
     if (id) payload.id = id;
@@ -71,8 +73,12 @@ const EditBlog = () => {
     try {
       const res = await axios.post(`${API_BASE}/blogs/save-draft`, payload);
       if (!id && res.data.id) navigate(`/edit/${res.data.id}`);
-      if (isAuto) toast.info("Auto-saved draft ", { autoClose: 2000 });
-      else toast.success("Draft saved ");
+      if (isAuto) {
+        toast.info("Auto-saved draft ", { autoClose: 2000 });
+      } else {
+        toast.success("Draft saved ");
+        navigate("/"); // <-- Add this line to go home after manual save
+      }
     } catch (err) {
       console.error("Save failed:", err);
       toast.error("Failed to save draft ");
@@ -84,14 +90,14 @@ const EditBlog = () => {
   const handlePublish = async () => {
     const payload = {
       ...blog,
-      tags: blog.tags.split(',').map(tag => tag.trim()),
+      tags: blog.tags.split(",").map((tag) => tag.trim()),
     };
     if (id) payload.id = id;
 
     try {
       await axios.post(`${API_BASE}/blogs/publish`, payload);
       toast.success("Published successfully ");
-      navigate('/');
+      navigate("/");
     } catch (err) {
       console.error("Publish error:", err);
       toast.error("Failed to publish ");
