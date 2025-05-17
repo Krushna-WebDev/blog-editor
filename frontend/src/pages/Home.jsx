@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import BlogList from "../components/BlogList";
+import Loader from "../components/Loader"; // <-- import Loader
 import { toast } from "react-toastify";
 
 const API_BASE = import.meta.env.VITE_API_URL;
@@ -9,15 +10,18 @@ const API_BASE = import.meta.env.VITE_API_URL;
 const Home = () => {
   const [blogs, setBlogs] = useState([]);
   const [activeTab, setActiveTab] = useState("published");
+  const [loading, setLoading] = useState(true); // <-- loading state
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(`${API_BASE}/blogs`)
       .then((res) => setBlogs(res.data))
       .catch((err) => {
         console.error("Error fetching blogs:", err);
         toast.error("Failed to fetch blogs!");
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const handleDelete = (id) => {
@@ -40,36 +44,41 @@ const Home = () => {
           </Link>
         </div>
 
-        {/* Navbar Tabs */}
-        <div className="flex gap-4 mb-8">
-          <button
-            className={`px-4 py-2 rounded-t-lg font-semibold transition ${
-              activeTab === "published"
-                ? "bg-blue-600 text-white"
-                : "bg-blue-100 text-blue-700"
-            }`}
-            onClick={() => setActiveTab("published")}
-          >
-            Published ({published.length})
-          </button>
-          <button
-            className={`px-4 py-2 rounded-t-lg font-semibold transition ${
-              activeTab === "draft"
-                ? "bg-yellow-500 text-white"
-                : "bg-yellow-100 text-yellow-700"
-            }`}
-            onClick={() => setActiveTab("draft")}
-          >
-            Drafts ({drafts.length})
-          </button>
-        </div>
+        {/* Loader */}
+        {loading ? (
+          <Loader />
+        ) : (
+          <>
+            <div className="flex gap-4 mb-8">
+              <button
+                className={`px-4 py-2 rounded-t-lg font-semibold transition ${
+                  activeTab === "published"
+                    ? "bg-blue-600 text-white"
+                    : "bg-blue-100 text-blue-700"
+                }`}
+                onClick={() => setActiveTab("published")}
+              >
+                Published ({published.length})
+              </button>
+              <button
+                className={`px-4 py-2 rounded-t-lg font-semibold transition ${
+                  activeTab === "draft"
+                    ? "bg-yellow-500 text-white"
+                    : "bg-yellow-100 text-yellow-700"
+                }`}
+                onClick={() => setActiveTab("draft")}
+              >
+                Drafts ({drafts.length})
+              </button>
+            </div>
 
-        {/* Show only the active tab */}
-        {activeTab === "published" && (
-          <BlogList blogs={published} title="Published" onDelete={handleDelete} />
-        )}
-        {activeTab === "draft" && (
-          <BlogList blogs={drafts} title="Drafts" onDelete={handleDelete} />
+            {activeTab === "published" && (
+              <BlogList blogs={published} title="Published" onDelete={handleDelete} />
+            )}
+            {activeTab === "draft" && (
+              <BlogList blogs={drafts} title="Drafts" onDelete={handleDelete} />
+            )}
+          </>
         )}
       </div>
     </div>
