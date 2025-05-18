@@ -9,6 +9,7 @@ const blogSchema = new mongoose.Schema({
     enum: ['draft', 'published'],
     default: 'draft'
   },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   created_at: {
     type: Date,
     default: Date.now
@@ -17,6 +18,11 @@ const blogSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+});
+
+blogSchema.pre('save', function(next) {
+  this.updated_at = new Date();
+  next();
 });
 
 module.exports = mongoose.model('Blog', blogSchema);

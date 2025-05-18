@@ -1,84 +1,113 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import BlogList from "../components/BlogList";
-import Loader from "../components/Loader"; // <-- import Loader
+import Loader from "../components/Loader";
 import { toast } from "react-toastify";
 
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const Home = () => {
-  const [blogs, setBlogs] = useState([]);
+  const [publishedBlogs, setPublishedBlogs] = useState([]);
+  const [drafts, setDrafts] = useState([]);
+  const [myBlogs, setMyBlogs] = useState([]); // <-- new state
   const [activeTab, setActiveTab] = useState("published");
-  const [loading, setLoading] = useState(true); // <-- loading state
+  const [loading, setLoading] = useState(true);
 
+  const token = localStorage.getItem("token");
+
+  // Fetch published blogs (all users)
   useEffect(() => {
     setLoading(true);
     axios
       .get(`${API_BASE}/blogs`)
-      .then((res) => setBlogs(res.data))
+      .then((res) => setPublishedBlogs(res.data))
       .catch((err) => {
-        console.error("Error fetching blogs:", err);
-        toast.error("Failed to fetch blogs!");
+        console.error("Error fetching published blogs:", err);
+        toast.error("Failed to fetch published blogs!");
       })
       .finally(() => setLoading(false));
   }, []);
 
+  // Fetch user's drafts
+  useEffect(() => {
+    if (!token) {
+      setDrafts([]);
+      setMyBlogs([]);
+      return;
+    }
+    axios
+      .get(`${API_BASE}/blogs/user`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        setDrafts(res.data.filter((blog) => blog.status === "draft"));
+        setMyBlogs(res.data); // <-- all user blogs (published + drafts)
+      })
+      .catch((err) => {
+        console.error("Error fetching drafts/myblogs:", err);
+      });
+  }, [token]);
+
   const handleDelete = (id) => {
-    setBlogs((blogs) => blogs.filter((blog) => blog._id !== id));
+    setPublishedBlogs((blogs) => blogs.filter((blog) => blog._id !== id));
+    setDrafts((blogs) => blogs.filter((blog) => blog._id !== id));
+    setMyBlogs((blogs) => blogs.filter((blog) => blog._id !== id)); // <-- update myBlogs too
   };
 
-  const drafts = blogs.filter((blog) => blog.status === "draft");
-  const published = blogs.filter((blog) => blog.status === "published");
+  if (!token) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-xl text-gray-600">
+        Please login to view blogs.
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="max-w-4xl mx-auto p-6">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-extrabold text-gray-800 tracking-tight">My Blogs</h1>
-          <Link
-            to="/edit"
-            className="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white px-6 py-2 rounded-lg font-semibold shadow transition"
+        <h1 className="text-4xl font-extrabold text-gray-800 tracking-tight mb-8">
+          Blogs
+        </h1>
+        <div className="flex gap-4 mb-8">
+          <button
+            className={`px-4 py-2 rounded-t-lg font-semibold transition ${
+              activeTab === "published"
+                ? "bg-blue-600 text-white"
+                : "bg-blue-100 text-blue-700"
+            }`}
+            onClick={() => setActiveTab("published")}
           >
-            + New Blog
-          </Link>
+            Published ({publishedBlogs.length})
+          </button>
+          <button
+            className={`px-4 py-2 rounded-t-lg font-semibold transition ${
+              activeTab === "draft"
+                ? "bg-yellow-500 text-white"
+                : "bg-yellow-100 text-yellow-700"
+            }`}
+            onClick={() => setActiveTab("draft")}
+          >
+            Drafts ({drafts.length})
+          </button>
+          <button
+            className={`px-4 py-2 rounded-t-lg font-semibold transition ${
+              activeTab === "myblogs"
+                ? "bg-green-600 text-white"
+                : "bg-green-100 text-green-700"
+            }`}
+            onClick={() => setActiveTab("myblogs")}
+          >
+            My Blogs ({myBlogs.length})
+          </button>
         </div>
-
-        {/* Loader */}
         {loading ? (
           <Loader />
+        ) : activeTab === "published" ? (
+          <BlogList blogs={publishedBlogs} title="Published" onDelete={handleDelete} />
+        ) : activeTab === "draft" ? (
+          <BlogList blogs={drafts} title="Drafts" onDelete={handleDelete} />
         ) : (
-          <>
-            <div className="flex gap-4 mb-8">
-              <button
-                className={`px-4 py-2 rounded-t-lg font-semibold transition ${
-                  activeTab === "published"
-                    ? "bg-blue-600 text-white"
-                    : "bg-blue-100 text-blue-700"
-                }`}
-                onClick={() => setActiveTab("published")}
-              >
-                Published ({published.length})
-              </button>
-              <button
-                className={`px-4 py-2 rounded-t-lg font-semibold transition ${
-                  activeTab === "draft"
-                    ? "bg-yellow-500 text-white"
-                    : "bg-yellow-100 text-yellow-700"
-                }`}
-                onClick={() => setActiveTab("draft")}
-              >
-                Drafts ({drafts.length})
-              </button>
-            </div>
-
-            {activeTab === "published" && (
-              <BlogList blogs={published} title="Published" onDelete={handleDelete} />
-            )}
-            {activeTab === "draft" && (
-              <BlogList blogs={drafts} title="Drafts" onDelete={handleDelete} />
-            )}
-          </>
+          <BlogList blogs={myBlogs} title="My Blogs" onDelete={handleDelete} />
         )}
       </div>
     </div>

@@ -4,7 +4,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import BlogEditor from "../components/BlogEditor";
 
-const API_BASE = import.meta.env.VITE_API_URL;
+const token = localStorage.getItem("token");
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const EditBlog = () => {
   const { id } = useParams();
@@ -23,7 +24,9 @@ const EditBlog = () => {
   useEffect(() => {
     if (id) {
       axios
-        .get(`${API_BASE}/blogs/${id}`)
+        .get(`${API_BASE}/blogs/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
         .then((res) => {
           const data = res.data;
           setBlog({
@@ -71,7 +74,9 @@ const EditBlog = () => {
     if (id) payload.id = id;
 
     try {
-      const res = await axios.post(`${API_BASE}/blogs/save-draft`, payload);
+      const res = await axios.post(`${API_BASE}/blogs/save-draft`, payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (!id && res.data.id) navigate(`/edit/${res.data.id}`);
       if (isAuto) {
         toast.info("Auto-saved draft ", { autoClose: 2000 });
@@ -95,7 +100,9 @@ const EditBlog = () => {
     if (id) payload.id = id;
 
     try {
-      await axios.post(`${API_BASE}/blogs/publish`, payload);
+      await axios.post(`${API_BASE}/blogs/publish`, payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       toast.success("Published successfully ");
       navigate("/");
     } catch (err) {

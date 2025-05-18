@@ -1,21 +1,24 @@
 # Blog Editor
 
-A modern blog editor with auto-save, draft/publish workflow, and a clean UI.
+A modern blog editor with auto-save, draft/publish workflow, authentication, and a clean UI.
 
 ## Features
 
-- Create, edit, auto-save, publish, and delete blogs
-- Draft and published blog separation with tab navigation
-- Tag support with pill-style display
-- Responsive, modern UI (Tailwind CSS)
-- Toast notifications for all actions
-- MongoDB backend with RESTful API
+- **User Authentication:** Signup, login, JWT-based session
+- **Create, Edit, Auto-save, Publish, and Delete Blogs**
+- **Draft & Published Blog Separation:** Tab navigation for easy switching
+- **Tag Support:** Add tags, pill-style display
+- **Only Owner Can Edit/Delete:** Edit/delete buttons only for your own blogs
+- **Draft Privacy:** Only you can see and edit your drafts
+- **Responsive, Modern UI:** Built with Tailwind CSS
+- **Toast Notifications:** For all actions
+- **MongoDB Backend:** RESTful API
 
 ## Tech Stack
 
 - **Frontend:** React, Tailwind CSS, Axios, React Router, React Toastify
 - **Backend:** Node.js, Express, MongoDB, Mongoose
-- **Other:** dotenv, CORS
+- **Other:** dotenv, CORS, JWT
 
 ## Setup Instructions
 
@@ -49,7 +52,8 @@ npm run dev
 ### 4. Usage
 
 - Open [http://localhost:5173](http://localhost:5173) in your browser.
-- Create, edit, and manage your blogs!
+- Sign up or log in to create, edit, and manage your blogs!
+- Only you can edit/delete your own blogs and see your drafts.
 
 ## Folder Structure
 

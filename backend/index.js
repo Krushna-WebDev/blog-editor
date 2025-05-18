@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
+const authRoutes = require('./routes/authRoutes');
 
 const allowedOrigins = [
   "https://blog-editorlive.netlify.app",
@@ -20,7 +21,7 @@ app.use(express.json());
 // Routes
 const blogRoutes = require("./routes/blogRoutes");
 app.use("/api/blogs", blogRoutes);
-
+app.use('/api/auth', authRoutes);
 // MongoDB Connect
 const PORT = process.env.PORT || 5000;
 mongoose
