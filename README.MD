@@ -1,76 +1,153 @@
-# Blog Editor
+# 🚀 Blog Editor
 
-A modern blog editor with auto-save, draft/publish workflow, authentication, and a clean UI.
+A full-stack blog editor with auto-save drafts, user authentication, and clean UI.
+Built as a Proof of Concept for the RevoltronX Full Stack Internship Assignment.
 
-## Features
+** Live Demo:** [https://blog-editorlive.netlify.app](https://blog-editorlive.netlify.app)
 
-- **User Authentication:** Signup, login, JWT-based session
-- **Create, Edit, Auto-save, Publish, and Delete Blogs**
-- **Draft & Published Blog Separation:** Tab navigation for easy switching
-- **Tag Support:** Add tags, pill-style display
-- **Only Owner Can Edit/Delete:** Edit/delete buttons only for your own blogs
-- **Draft Privacy:** Only you can see and edit your drafts
-- **Responsive, Modern UI:** Built with Tailwind CSS
-- **Toast Notifications:** For all actions
-- **MongoDB Backend:** RESTful API
+---
 
-## Tech Stack
+##  Features
 
-- **Frontend:** React, Tailwind CSS, Axios, React Router, React Toastify
-- **Backend:** Node.js, Express, MongoDB, Mongoose
-- **Other:** dotenv, CORS, JWT
+*  **User Authentication**: Signup/Login using JWT
+*  **Blog Editor**:
 
-## Setup Instructions
+  * Title, Content (textarea), Tags (comma-separated)
+  * Save as Draft / Publish options
+  * Auto-save drafts (every 30s or after 5s of inactivity)
+*  **Draft vs Published Views**:
 
-### 1. Clone the repo
+  * Separate tabs for Drafts and Published blogs
+  * Only the blog owner can see/edit drafts
+*  **Edit/Delete Permissions**:
+
+  * Only the owner can edit/delete their blogs
+*  **Tag Support**: Clean pill-style tag display
+*  **Responsive UI**: Styled with Tailwind CSS
+*  **Notifications**: Toast alerts for every action
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend:
+
+* React
+* React Router
+* Axios
+* Tailwind CSS
+* React Toastify
+
+### Backend:
+
+* Node.js
+* Express.js
+* MongoDB + Mongoose
+* JSON Web Tokens (JWT)
+* CORS, dotenv
+
+---
+
+##  Getting Started (For Local Setup)
+
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Krushna-WebDev/blog-editor.git
 cd blog-editor
 ```
 
+---
+
 ### 2. Backend Setup
 
 ```bash
 cd backend
 npm install
-# Set up your MongoDB connection in .env
-echo "MONGO_URI=mongodb://localhost:27017/blog-editor" > .env
+```
+
+> Create a `.env` file and add your MongoDB URI & JWT secret:
+
+```env
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+```
+
+```bash
 npm start
 ```
+
+---
 
 ### 3. Frontend Setup
 
 ```bash
 cd ../frontend
 npm install
-# Set up API URL in .env
-echo "VITE_API_URL=http://localhost:5000/api" > .env
+```
+
+> Create a `.env` file with your API base URL:
+
+```env
+VITE_API_URL=http://localhost:5000/api
+```
+
+```bash
 npm run dev
 ```
 
-### 4. Usage
+---
 
-- Open [http://localhost:5173](http://localhost:5173) in your browser.
-- Sign up or log in to create, edit, and manage your blogs!
-- Only you can edit/delete your own blogs and see your drafts.
+### 4. Run the App
 
-## Folder Structure
+Open your browser at: [http://localhost:5173](http://localhost:5173)
+
+You can now:
+
+* Sign up / Login
+* Create blogs, auto-save drafts
+* Edit, publish, delete your posts
+* View all published blogs from other users
+
+---
+
+## Live Deployment
+
+* **Frontend:** [Netlify](https://blog-editorlive.netlify.app)
+* **Backend:** Hosted on Render
+
+> Test Credentials are pre-filled on the Login Page
+
+---
+
+##  Folder Structure
 
 ```
-backend/
-  controller/
-  models/
-  routes/
-  index.js
-frontend/
-  src/
-    components/
-    pages/
-    App.jsx
-  .env
+blog-editor/
+├── backend/
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
+│   └── index.js
+└── frontend/
+    ├── src/
+    │   ├── components/
+    │   ├── pages/
+    │   └── App.jsx
+    └── .env
 ```
 
-## License
+---
+
+##  License
 
 MIT
+
+---
+
+## Submission Info (for RevoltronX)
+
+* GitHub Repo: [https://github.com/Krushna-WebDev/blog-editor](https://github.com/Krushna-WebDev/blog-editor)
+* Live Site: [https://blog-editorlive.netlify.app](https://blog-editorlive.netlify.app)
+
+---
