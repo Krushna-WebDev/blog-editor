@@ -16,8 +16,7 @@ const Login = () => {
       const res = await axios.post(`${API_BASE}/auth/login`, { email, password });
       localStorage.setItem("token", res.data.token);
       toast.success("Login successful");
-      window.location.href = "/"; 
-      navigate("/");
+      window.location.href = "/";
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
     }
@@ -55,6 +54,18 @@ const Login = () => {
           <Link to="/signup" className="text-blue-600 hover:underline font-medium">
             Sign Up
           </Link>
+        </div>
+        {/* Demo credentials */}
+        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
+          <div className="font-semibold mb-1">Demo Accounts (use for login):</div>
+          <div>
+            <span className="font-medium">Email:</span> krushna@gmail.com<br />
+            <span className="font-medium">Password:</span> 123456
+          </div>
+          <div className="mt-2">
+            <span className="font-medium">Email:</span> abc@gmail.com<br />
+            <span className="font-medium">Password:</span> 123
+          </div>
         </div>
       </form>
     </div>
